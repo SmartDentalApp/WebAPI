@@ -18,6 +18,11 @@ namespace smart_dental_webapi.Repositories.Customer
             return _context.Customers.OrderBy(c => c.Id).ToList();
         }
 
+        public CustomerEntity GetCustomer(int id)
+        {
+            return _context.Customers.Where(c => c.Id == id).FirstOrDefault();
+        }
+
         public bool CreateCustomer(CustomerEntity customer)
         {
             _context.Add(customer);

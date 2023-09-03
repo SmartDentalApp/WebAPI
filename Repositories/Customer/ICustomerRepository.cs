@@ -6,5 +6,6 @@ namespace PokemonReviewApp.Interfaces
     {
         bool CreateCustomer(CustomerEntity customer);
         ICollection<CustomerEntity> GetCustomers();
+        CustomerEntity GetCustomer(int id);
     }
 }
