@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using PokemonReviewApp.Interfaces;
+using smart_dental_webapi.Repositories.Customer;
 using smart_dental_webapi.Entity;
 using smart_dental_webapi.Helper;
 using smart_dental_webapi.Models.Customer;
 using smart_dental_webapi.Models.Pagination;
 using RouteAttribute = Microsoft.AspNetCore.Mvc.RouteAttribute;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using smart_dental_webapi.Services.Customer;
 
 namespace smart_dental_webapi.Controllers
 {
@@ -13,45 +15,35 @@ namespace smart_dental_webapi.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerRepository _customerRepository;
+        private readonly ICustomerService _customerService;
         private readonly IMapper _mapper;
 
-        public CustomerController(ICustomerRepository customerRepository, IMapper mapper)
+        public CustomerController(ICustomerRepository customerRepository, IMapper mapper, ICustomerService customerService)
         {
             _customerRepository = customerRepository;
+            _customerService = customerService;
             _mapper = mapper;
         }
 
         [HttpPost]
         [ProducesResponseType(200)]
-        [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public ActionResult CreateCustomer([FromBody] CustomerPostRequestModel customerCreate)
         {
-            if (customerCreate == null)
-                return BadRequest(ModelState);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var customer = _customerRepository.GetCustomers()
-                .Where(c => c.Email.Trim().ToUpper() == customerCreate.Email.TrimEnd().ToUpper())
-                .FirstOrDefault();
-
-            if (customer != null)
+            if (!_customerService.IsCustomerCreateValid(customerCreate, ModelState))
             {
-                ModelState.AddModelError("", "Cliente já cadastrado");
-                return StatusCode(422, ModelState);
+                return StatusCode(400, ModelState);
             }
 
-            var customerMap = _mapper.Map<CustomerEntity>(customerCreate);
+            var savedCustomer = _customerService.CreateCustomer(customerCreate);
 
-            if (!_customerRepository.CreateCustomer(customerMap))
+            if (!savedCustomer)
             {
-                ModelState.AddModelError("", "Algo ocorreu errado ao salvar");
+                ModelState.AddModelError("", "Ocorreu um erro ao salvar o cliente");
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Successfully created");
+            return Ok("Cliente criado com sucesso");
         }
 
         [HttpGet]

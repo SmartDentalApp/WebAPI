@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using PokemonReviewApp.Interfaces;
+using smart_dental_webapi.Repositories.Customer;
 using smart_dental_webapi.Boot;
 using smart_dental_webapi.Data;
-using smart_dental_webapi.Repositories.Customer;
 using smart_dental_webapi.Utils;
+using smart_dental_webapi.Services.Customer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +12,9 @@ builder.Services.AddCors();
 builder.Services.AddControllers();
 builder.Services.AddTransient<SeedDb>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 builder.Services.AddDbContext<SmartDentalDBContext>(options =>
 {

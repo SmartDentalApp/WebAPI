@@ -1,5 +1,4 @@
-﻿using PokemonReviewApp.Interfaces;
-using smart_dental_webapi.Data;
+﻿using smart_dental_webapi.Data;
 using smart_dental_webapi.Entity;
 
 namespace smart_dental_webapi.Repositories.Customer

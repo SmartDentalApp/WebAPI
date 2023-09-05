@@ -1,6 +1,6 @@
 ﻿using smart_dental_webapi.Entity;
 
-namespace PokemonReviewApp.Interfaces
+namespace smart_dental_webapi.Repositories.Customer
 {
     public interface ICustomerRepository
     {
